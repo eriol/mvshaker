@@ -20,8 +20,7 @@ type shakableFile struct {
 func main() {
 
 	var (
-		sources = kingpin.Arg("source",
-			"Files or directories to skake.").Required().Strings()
+		sources = kingpin.Arg("source", "Files to skake.").Required().Strings()
 	)
 
 	kingpin.Version(version)
@@ -47,11 +46,21 @@ func collect(sources []string) []shakableFile {
 
 	for _, source := range sources {
 
-		file, err := filepath.Abs(source)
+		path, err := filepath.Abs(source)
 		if err != nil {
 			continue
 		}
-		paths = append(paths, shakableFile{filepath: file, isShaked: false})
+
+		fi, err := os.Stat(path)
+		if err != nil {
+			continue
+		}
+
+		if fi.IsDir() {
+			continue
+		}
+
+		paths = append(paths, shakableFile{filepath: path, isShaked: false})
 	}
 
 	return paths
