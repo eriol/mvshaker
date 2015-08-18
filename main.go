@@ -27,7 +27,7 @@ func main() {
 	)
 
 	kingpin.Version(version)
-	kingpin.CommandLine.Help = "Files shaker for the Masses."
+	kingpin.CommandLine.Help = "File shaker for the Masses."
 	kingpin.Parse()
 
 	rand.Seed(time.Now().UTC().UnixNano())
