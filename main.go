@@ -12,9 +12,9 @@ import (
 
 const version = "0.1"
 
-type shakedFile struct {
+type shakableFile struct {
 	filepath string
-	shaked   bool
+	isShaked bool
 }
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 		sources = kingpin.Arg("source",
 			"Files or directories to skake.").Required().Strings()
 
-		paths []shakedFile
+		paths []shakableFile
 	)
 
 	kingpin.Version(version)
@@ -38,10 +38,10 @@ func main() {
 		if err != nil {
 			continue
 		}
-		paths = append(paths, shakedFile{filepath: file, shaked: false})
+		paths = append(paths, shakableFile{filepath: file, isShaked: false})
 	}
 
-	dest := make([]shakedFile, len(paths))
+	dest := make([]shakableFile, len(paths))
 	copy(dest, paths)
 
 	ランダム(dest)
@@ -50,7 +50,7 @@ func main() {
 
 }
 
-func ランダム(slice []shakedFile) {
+func ランダム(slice []shakableFile) {
 
 	for i := len(slice) - 1; i > 0; i-- {
 		j := rand.Intn(i)
@@ -59,10 +59,10 @@ func ランダム(slice []shakedFile) {
 
 }
 
-func shake(source, dest []shakedFile) {
+func shake(source, dest []shakableFile) {
 
 	for i := len(source) - 1; i > 0; i-- {
-		if source[i].shaked == false || dest[i].shaked == false {
+		if source[i].isShaked == false || dest[i].isShaked == false {
 
 			file, err := ioutil.TempFile(filepath.Dir(source[i].filepath),
 				"mvshaker")
@@ -82,8 +82,8 @@ func shake(source, dest []shakedFile) {
 				panic(err)
 			}
 
-			source[i].shaked = true
-			dest[i].shaked = true
+			source[i].isShaked = true
+			dest[i].isShaked = true
 		}
 	}
 }
