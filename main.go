@@ -22,8 +22,6 @@ func main() {
 	var (
 		sources = kingpin.Arg("source",
 			"Files or directories to skake.").Required().Strings()
-
-		paths []shakableFile
 	)
 
 	kingpin.Version(version)
@@ -32,7 +30,22 @@ func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	for _, source := range *sources {
+	paths := collect(*sources)
+
+	dest := make([]shakableFile, len(paths))
+	copy(dest, paths)
+
+	ランダム(dest)
+
+	shake(paths, dest)
+
+}
+
+func collect(sources []string) []shakableFile {
+
+	var paths []shakableFile
+
+	for _, source := range sources {
 
 		file, err := filepath.Abs(source)
 		if err != nil {
@@ -41,12 +54,7 @@ func main() {
 		paths = append(paths, shakableFile{filepath: file, isShaked: false})
 	}
 
-	dest := make([]shakableFile, len(paths))
-	copy(dest, paths)
-
-	ランダム(dest)
-
-	shake(paths, dest)
+	return paths
 
 }
 
