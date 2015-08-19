@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 	"time"
 
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -20,7 +22,12 @@ type shakableFile struct {
 func main() {
 
 	var (
-		sources = kingpin.Arg("source", "Files to skake.").Required().Strings()
+		sources = kingpin.Arg(
+			"source",
+			"Files to skake.").Required().Strings()
+		excludeFiles = kingpin.Flag(
+			"exclude",
+			`Files to be excluded. Use " for multiple arguments and space as separator, e.g. "bash ls".`).Short('e').String()
 	)
 
 	kingpin.Version(version)
@@ -29,7 +36,9 @@ func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	paths := collect(*sources)
+	exclude := strings.Split(*excludeFiles, " ")
+
+	paths := collect(*sources, exclude)
 
 	dest := make([]shakableFile, len(paths))
 	copy(dest, paths)
@@ -40,9 +49,10 @@ func main() {
 
 }
 
-func collect(sources []string) []shakableFile {
+func collect(sources, exclude []string) []shakableFile {
 
 	var paths []shakableFile
+	sort.Strings(exclude)
 
 	for _, source := range sources {
 
@@ -57,6 +67,12 @@ func collect(sources []string) []shakableFile {
 		}
 
 		if fi.IsDir() {
+			continue
+		}
+
+		target := filepath.Base(path)
+		i := sort.SearchStrings(exclude, target)
+		if i < len(exclude) && exclude[i] == target {
 			continue
 		}
 
