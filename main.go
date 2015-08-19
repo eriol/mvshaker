@@ -21,13 +21,14 @@ type shakableFile struct {
 
 func main() {
 
+	const (
+		sourcesHelp      = "Files to skake."
+		excludeFilesHelp = `Files to be excluded. Use " for multiple arguments and space as separator, e.g. "bash ls".`
+	)
+
 	var (
-		sources = kingpin.Arg(
-			"source",
-			"Files to skake.").Required().Strings()
-		excludeFiles = kingpin.Flag(
-			"exclude",
-			`Files to be excluded. Use " for multiple arguments and space as separator, e.g. "bash ls".`).Short('e').String()
+		sources      = kingpin.Arg("source", sourcesHelp).Required().Strings()
+		excludeFiles = kingpin.Flag("exclude", excludeFilesHelp).Short('e').String()
 	)
 
 	kingpin.Version(version)
