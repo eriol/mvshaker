@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 	"time"
 
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -23,12 +22,12 @@ func main() {
 
 	const (
 		sourcesHelp      = "Files to skake."
-		excludeFilesHelp = `Files to be excluded. Use " for multiple arguments and space as separator, e.g. "bash ls".`
+		excludeFilesHelp = "Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls."
 	)
 
 	var (
-		sources      = kingpin.Arg("source", sourcesHelp).Required().Strings()
-		excludeFiles = kingpin.Flag("exclude", excludeFilesHelp).Short('e').String()
+		sources = kingpin.Arg("source", sourcesHelp).Required().Strings()
+		exclude = kingpin.Flag("exclude", excludeFilesHelp).Short('e').Strings()
 	)
 
 	kingpin.Version(version)
@@ -37,9 +36,7 @@ func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	exclude := strings.Split(*excludeFiles, " ")
-
-	paths := collect(*sources, exclude)
+	paths := collect(*sources, *exclude)
 
 	dest := make([]shakableFile, len(paths))
 	copy(dest, paths)
