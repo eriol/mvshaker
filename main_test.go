@@ -70,3 +70,23 @@ func TestCollectExclude(t *testing.T) {
 			shakableFile{filepath: file1.Name(), isShaked: false},
 			shakableFile{filepath: file3.Name(), isShaked: false}})
 }
+
+func TestCollectDirectory(t *testing.T) {
+
+	file1, _ := ioutil.TempFile("", "mvshaker")
+	defer os.Remove(file1.Name())
+	file2, _ := ioutil.TempFile("", "mvshaker")
+	defer os.Remove(file2.Name())
+	dir, _ := ioutil.TempDir("", "mvshaker")
+	defer os.Remove(dir)
+
+	filesToCollect := []string{file1.Name(), file2.Name(), dir}
+	paths := collect(filesToCollect, []string{})
+
+	assert.Equal(
+		t,
+		paths,
+		[]shakableFile{
+			shakableFile{filepath: file1.Name(), isShaked: false},
+			shakableFile{filepath: file2.Name(), isShaked: false}})
+}
