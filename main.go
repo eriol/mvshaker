@@ -83,6 +83,7 @@ func collect(sources, exclude []string) []shakableFile {
 
 func ランダム(slice []shakableFile) {
 
+	// Reverse traversing because rand.Intn panics if argument is <= 0.
 	for i := len(slice) - 1; i > 0; i-- {
 		j := rand.Intn(i)
 		slice[i], slice[j] = slice[j], slice[i]
