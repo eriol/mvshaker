@@ -16,7 +16,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-const version = "0.1"
+const version = "0.2a"
 
 type shakableFile struct {
 	filepath string
