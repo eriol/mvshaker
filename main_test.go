@@ -10,10 +10,18 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+// sort.Interface for []shakableFile based on the filepath field.
+type ByPath []shakableFile
+
+func (p ByPath) Len() int           { return len(p) }
+func (p ByPath) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p ByPath) Less(i, j int) bool { return p[i].filepath < p[j].filepath }
 
 func Testランダム(t *testing.T) {
 	files := []shakableFile{
@@ -113,15 +121,16 @@ func TestCollectDirectoryRecursive(t *testing.T) {
 
 	filesToCollect := []string{file1.Name(), file2.Name(), dir}
 	paths := collect(filesToCollect, []string{}, true)
+	sort.Sort(ByPath(paths))
 
-	assert.Equal(
-		t,
-		paths,
-		[]shakableFile{
-			shakableFile{filepath: file1.Name(), isShaked: false},
-			shakableFile{filepath: file2.Name(), isShaked: false},
-			shakableFile{filepath: file4.Name(), isShaked: false},
-			shakableFile{filepath: file3.Name(), isShaked: false}})
+	expected := []shakableFile{
+		shakableFile{filepath: file1.Name(), isShaked: false},
+		shakableFile{filepath: file2.Name(), isShaked: false},
+		shakableFile{filepath: file3.Name(), isShaked: false},
+		shakableFile{filepath: file4.Name(), isShaked: false}}
+	sort.Sort(ByPath(expected))
+
+	assert.Equal(t, paths, expected)
 }
 
 func TestShake(t *testing.T) {
