@@ -28,11 +28,13 @@ func main() {
 	const (
 		sourcesHelp      = "Files to skake."
 		excludeFilesHelp = "Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls."
+		recursiveHelp    = "Include recursively files inside directories."
 	)
 
 	var (
-		sources = kingpin.Arg("source", sourcesHelp).Required().Strings()
-		exclude = kingpin.Flag("exclude", excludeFilesHelp).Short('e').Strings()
+		sources   = kingpin.Arg("source", sourcesHelp).Required().Strings()
+		exclude   = kingpin.Flag("exclude", excludeFilesHelp).Short('e').Strings()
+		recursive = kingpin.Flag("recursive", recursiveHelp).Short('r').Bool()
 	)
 
 	kingpin.Version(version)
@@ -41,7 +43,7 @@ func main() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	paths := collect(*sources, *exclude)
+	paths := collect(*sources, *exclude, *recursive)
 
 	dest := make([]shakableFile, len(paths))
 	copy(dest, paths)
@@ -52,9 +54,11 @@ func main() {
 
 }
 
-func collect(sources, exclude []string) []shakableFile {
+func collect(sources, exclude []string, recursive bool) []shakableFile {
 
-	var paths []shakableFile
+	var paths []string
+	var files []shakableFile
+
 	sort.Strings(exclude)
 
 	for _, source := range sources {
@@ -70,19 +74,31 @@ func collect(sources, exclude []string) []shakableFile {
 		}
 
 		if fi.IsDir() {
-			continue
+			if recursive {
+				filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+					if !info.IsDir() {
+						paths = append(paths, path)
+					}
+					return nil
+				})
+				continue
+			} else {
+				continue
+			}
 		}
 
+		paths = append(paths, path)
+	}
+
+	for _, path := range paths {
 		target := filepath.Base(path)
 		i := sort.SearchStrings(exclude, target)
 		if i < len(exclude) && exclude[i] == target {
 			continue
 		}
-
-		paths = append(paths, shakableFile{filepath: path, isShaked: false})
+		files = append(files, shakableFile{filepath: path, isShaked: false})
 	}
-
-	return paths
+	return files
 
 }
 

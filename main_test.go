@@ -45,7 +45,7 @@ func TestCollectNoExclude(t *testing.T) {
 	defer os.Remove(file3.Name())
 
 	filesToCollect := []string{file1.Name(), file2.Name(), file3.Name()}
-	paths := collect(filesToCollect, []string{})
+	paths := collect(filesToCollect, []string{}, false)
 
 	assert.Equal(
 		t,
@@ -66,7 +66,7 @@ func TestCollectExclude(t *testing.T) {
 	defer os.Remove(file3.Name())
 
 	filesToCollect := []string{file1.Name(), file2.Name(), file3.Name()}
-	paths := collect(filesToCollect, []string{filepath.Base(file2.Name())})
+	paths := collect(filesToCollect, []string{filepath.Base(file2.Name())}, false)
 
 	assert.Equal(
 		t,
@@ -86,7 +86,7 @@ func TestCollectDirectory(t *testing.T) {
 	defer os.Remove(dir)
 
 	filesToCollect := []string{file1.Name(), file2.Name(), dir}
-	paths := collect(filesToCollect, []string{})
+	paths := collect(filesToCollect, []string{}, false)
 
 	assert.Equal(
 		t,
@@ -94,6 +94,34 @@ func TestCollectDirectory(t *testing.T) {
 		[]shakableFile{
 			shakableFile{filepath: file1.Name(), isShaked: false},
 			shakableFile{filepath: file2.Name(), isShaked: false}})
+}
+
+func TestCollectDirectoryRecursive(t *testing.T) {
+
+	file1, _ := ioutil.TempFile("", "mvshaker")
+	defer os.Remove(file1.Name())
+	file2, _ := ioutil.TempFile("", "mvshaker")
+	defer os.Remove(file2.Name())
+	dir, _ := ioutil.TempDir("", "mvshaker")
+	defer os.Remove(dir)
+	file3, _ := ioutil.TempFile(dir, "mvshaker")
+	defer os.Remove(file3.Name())
+	dir2, _ := ioutil.TempDir(dir, "mvshaker")
+	defer os.Remove(dir2)
+	file4, _ := ioutil.TempFile(dir2, "mvshaker")
+	defer os.Remove(file4.Name())
+
+	filesToCollect := []string{file1.Name(), file2.Name(), dir}
+	paths := collect(filesToCollect, []string{}, true)
+
+	assert.Equal(
+		t,
+		paths,
+		[]shakableFile{
+			shakableFile{filepath: file1.Name(), isShaked: false},
+			shakableFile{filepath: file2.Name(), isShaked: false},
+			shakableFile{filepath: file4.Name(), isShaked: false},
+			shakableFile{filepath: file3.Name(), isShaked: false}})
 }
 
 func TestShake(t *testing.T) {

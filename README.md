@@ -8,8 +8,8 @@ It was created to remember Warsaw's Second Law: "Never change anything after
 3pm on a Friday."
 See http://barry.warsaw.us/software/laws.html for more details.
 
-Directories are silently ignored and files can be excluded using `--exclude`
-flag (short version `-e`).
+Directories are ignored if you don't use `--recursive` flag (short version `-r`)
+and files can be excluded using `--exclude` flag (short version `-e`).
 
 ## Installation ##
 
@@ -26,3 +26,7 @@ Go compiler:
 multiple files:
 
     # mvshaker /bin/* -e bash -e ls
+
+Since version 0.2a:
+
+    # mvshaker -r /bin -e bash -e ls
