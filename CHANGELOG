@@ -1,4 +1,4 @@
-# Release 0.2 (in development) #
+# Release 0.2 (November 15, 2015) #
 
 * Collect recursively files inside directories using `--recursive` flag.
 

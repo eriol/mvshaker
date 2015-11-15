@@ -27,6 +27,6 @@ multiple files:
 
     # mvshaker /bin/* -e bash -e ls
 
-Since version 0.2a:
+Since version 0.2:
 
     # mvshaker -r /bin -e bash -e ls
