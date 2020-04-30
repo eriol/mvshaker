@@ -1,0 +1,9 @@
+image: debian/testing
+packages:
+  - golang-go
+sources:
+  - https://git.sr.ht/~eriol/mvshaker
+tasks:
+  - build: |
+      cd mvshaker
+      go test -v
