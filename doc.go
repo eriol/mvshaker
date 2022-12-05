@@ -28,4 +28,4 @@ Since version 0.2:
     # mvshaker -r /bin -e bash -e ls
 
 */
-package main // import "eriol.xyz/mvshaker"
+package main // import "noa.mornie.org/eriol/mvshaker"
