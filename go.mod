@@ -1,4 +1,4 @@
-module eriol.xyz/mvshaker
+module noa.mornie.org/eriol/mvshaker
 
 go 1.14
 
