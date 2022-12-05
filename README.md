@@ -16,7 +16,7 @@ and files can be excluded using `--exclude` flag (short version `-e`).
 To build `mvshaker` and install it to `$GOPATH/bin/mvshaker`you need a working
 Go compiler:
 
-    % go get eriol.xyz/mvshaker
+    % go get noa.mornie.org/eriol/mvshaker
 
 ## Examples ##
 
