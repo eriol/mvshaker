@@ -17,7 +17,7 @@ import (
 	"github.com/alecthomas/kong"
 )
 
-const version = "0.4"
+const version = "0.4.1"
 
 type VersionFlag string
 
