@@ -13,7 +13,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/alecthomas/kingpin/v2"
+	"github.com/alecthomas/kong"
 )
 
 const version = "0.3"
@@ -23,27 +23,26 @@ type shakableFile struct {
 	isShaked bool
 }
 
+var cli struct {
+	Sources   []string `arg"" help:Files to skake.`
+	Exclude   []string `help:"Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls." short:"e"`
+	Recursive bool     `help:"Include recursively files inside directories." short:"r"`
+}
+
 func main() {
 
-	const (
-		sourcesHelp      = "Files to skake."
-		excludeFilesHelp = "Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls."
-		recursiveHelp    = "Include recursively files inside directories."
-	)
-
-	var (
-		sources   = kingpin.Arg("source", sourcesHelp).Required().Strings()
-		exclude   = kingpin.Flag("exclude", excludeFilesHelp).Short('e').Strings()
-		recursive = kingpin.Flag("recursive", recursiveHelp).Short('r').Bool()
-	)
-
-	kingpin.Version(version)
-	kingpin.CommandLine.Help = "File shaker for the Masses."
-	kingpin.Parse()
+	_ = kong.Parse(&cli,
+		kong.Name("mvshaker"),
+		kong.Description("File shaker for the Masses."),
+		kong.UsageOnError(),
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+			Summary: true,
+		}))
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	paths := collect(*sources, *exclude, *recursive)
+	paths := collect(cli.Sources, cli.Exclude, cli.Recursive)
 
 	dest := make([]shakableFile, len(paths))
 	copy(dest, paths)
