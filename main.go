@@ -39,7 +39,7 @@ type shakableFile struct {
 }
 
 var cli struct {
-	Sources   []string    `arg"" help:Files to skake.`
+	Sources   []string    `arg:"" help:"Files to skake."`
 	Exclude   []string    `help:"Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls." short:"e"`
 	Recursive bool        `help:"Include recursively files inside directories." short:"r"`
 	Version   VersionFlag `name:"version" help:"Show application version."`
