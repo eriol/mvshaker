@@ -6,6 +6,7 @@
 package main // import "noa.mornie.org/eriol/mvshaker"
 
 import (
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -18,15 +19,30 @@ import (
 
 const version = "0.3"
 
+type VersionFlag string
+
+func (v VersionFlag) Decode(ctx *kong.DecodeContext) error {
+	return nil
+}
+func (v VersionFlag) IsBool() bool {
+	return true
+}
+func (v VersionFlag) BeforeApply(app *kong.Kong, vars kong.Vars) error {
+	fmt.Println(vars["version"])
+	app.Exit(0)
+	return nil
+}
+
 type shakableFile struct {
 	filepath string
 	isShaked bool
 }
 
 var cli struct {
-	Sources   []string `arg"" help:Files to skake.`
-	Exclude   []string `help:"Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls." short:"e"`
-	Recursive bool     `help:"Include recursively files inside directories." short:"r"`
+	Sources   []string    `arg"" help:Files to skake.`
+	Exclude   []string    `help:"Files to be excluded. Call it multiple time to exclude more than one file, e.g. -e bash -e ls." short:"e"`
+	Recursive bool        `help:"Include recursively files inside directories." short:"r"`
+	Version   VersionFlag `name:"version" help:"Show application version."`
 }
 
 func main() {
@@ -38,7 +54,10 @@ func main() {
 		kong.ConfigureHelp(kong.HelpOptions{
 			Compact: true,
 			Summary: true,
-		}))
+		}),
+		kong.Vars{
+			"version": version,
+		})
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
