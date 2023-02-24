@@ -1,5 +1,10 @@
 # Changelog
 
+## Release 0.4.1 (February 24, 2023)
+
+Fix build warning: struct field tag not compatible ... bad syntax for struct
+tag pair.
+
 ## Release 0.4 (February 24, 2023)
 
 Switch to kong for cli parsing.
