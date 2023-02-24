@@ -1,12 +1,18 @@
-# Release 0.3 (August 24, 2020) #
+# Changelog
 
-* Use Go modules to handle dependencies.
+## Release 0.4 (February 24, 2023)
 
-# Release 0.2 (November 15, 2015) #
+Switch to kong for cli parsing.
 
-* Collect recursively files inside directories using `--recursive` flag.
+## Release 0.3 (August 24, 2020)
 
-# Release 0.1 (August 24, 2015) #
+Use Go modules to handle dependencies.
 
-* First public release.
-  Dedicated to sk4t.
+## Release 0.2 (November 15, 2015)
+
+Collect recursively files inside directories using `--recursive` flag.
+
+## Release 0.1 (August 24, 2015)
+
+First public release.
+Dedicated to sk4t.
